@@ -29,6 +29,7 @@ namespace First
                     score += last;
                     match = false;
                 }
+                last = curr;
             }
 
             Console.WriteLine("Score: " + score);

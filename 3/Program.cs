@@ -10,7 +10,7 @@ namespace _3
         static void Main(string[] args)
         {
             int input = 265149;
-            Console.WriteLine(first(input));
+            Console.WriteLine(second(input));
             Console.ReadKey();
         }
         static int first(int input)
@@ -69,18 +69,116 @@ namespace _3
         }
         static int second(int input)
         {
-            var circle = new List<int>();
-            
+            int size = 501;
+            int[,] circle = new int[size, size]; 
+
+            //Create empty 2d list
+            for(int i=0; i< size; i++)
+            {
+                for(int j=0; j < size; j++)
+                {
+                    circle[i,j] = 0;
+                }
+            }
+
+
             //Init
-            int depth = 1;
             int sideLength = 3;
-            circle.Add(1);
+            int sideCounter = 1;
+            int posX = size / 2;
+            int posY = size / 2;
+            circle[posY, posX] = 1;
+            posX++;
+            circle[posY, posX] = 1;
+            posY--;
+            circle[posY, posX] = 2;
+            string dir = "left";
 
             while (true)
             {
-
+                if (circle[posY, posX] > 265149)
+                    return circle[posY, posX];
+                if (dir == "left")
+                {
+                    posX--;
+                    sideCounter++;
+                    circle[posY, posX] = returnQuadrantSum(posY,posX, circle);
+                    if (sideCounter >= sideLength)
+                    {
+                        dir = "down";
+                        sideCounter = 1;
+                    }
+                }
+                if (dir == "down")
+                {
+                    posY++;
+                    sideCounter++;
+                    circle[posY, posX] = returnQuadrantSum(posY, posX, circle);
+                    if (sideCounter >= sideLength)
+                    {
+                        dir = "right";
+                        sideCounter = 1;
+                    }
+                }
+                if (dir == "right")
+                {
+                    posX++;
+                    sideCounter++;
+                    circle[posY, posX] = returnQuadrantSum(posY, posX, circle);
+                    if (sideCounter >= sideLength)
+                    {
+                        dir = "up";
+                        sideCounter = 1;
+                    }
+                }
+                if (dir == "up") // new circle layer
+                {
+                    posX++;
+                    circle[posY, posX] = returnQuadrantSum(posY, posX, circle);
+                    sideLength += 2;
+                    while (true)
+                    {
+                        posY--;
+                        circle[posY, posX] = returnQuadrantSum(posY, posX, circle);
+                        sideCounter++;
+                        if (sideCounter >= sideLength - 1)
+                        {
+                            dir = "left";
+                            sideCounter = 1;
+                            break;
+                        }
+                    }
+                }
             }
+
+            //writeCircle(circle);
+
+
             return 0;
+        }
+        static void writeCircle(int[,]cirlce)
+        {
+            for(int i = 0; i < cirlce.GetLength(0); i++)
+            {
+                for(int j=0;j<cirlce.GetLength(1); j++)
+                {
+                    Console.Write(cirlce[i, j] + " ");
+                }
+                Console.Write('\n');
+            }
+        }
+        static int returnQuadrantSum(int posX,int posY, int[,] circle)
+        {
+            int sum = 0; 
+            sum += circle[posX - 1, posY];
+            sum += circle[posX + 1, posY];
+            sum += circle[posX, posY - 1];
+            sum += circle[posX, posY + 1];
+            sum += circle[posX - 1, posY - 1];
+            sum += circle[posX + 1, posY - 1];
+            sum += circle[posX - 1, posY + 1];
+            sum += circle[posX + 1, posY + 1];
+            return sum;
         }
     }
 }

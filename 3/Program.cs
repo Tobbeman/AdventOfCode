@@ -9,14 +9,16 @@ namespace _3
     {
         static void Main(string[] args)
         {
-            int input = 12;
-            first(input);
+            int input = 265149;
+            Console.WriteLine(first(input));
+            Console.ReadKey();
         }
         static int first(int input)
         {
             if (input == 1)
                 return 0;
 
+            int distance = 0;
             int circle = 1;
             int circleLength = 8;
             int start = 2;
@@ -24,14 +26,37 @@ namespace _3
 
             while (true)
             {
-                if(start < input && input < finish)
+                if(start <= input && input <= finish)
                 {
-                    int sideLenght = 3 + (circle * 2);
-                    int diff = input - start;
-                    if(diff < sideLenght){
+                    int sideLenght = 3 + ((circle-1) * 2);
+                    int topRight = start + sideLenght - 2;
+                    int topLeft = start + sideLenght * 2 - 3;
+                    int botLeft = start + sideLenght * 3 - 4;
+                    int botRight = finish;
+
+                    
+                    if (input < topRight){
                         //Right side
-                        
+                        distance += Math.Abs(input - (topRight - sideLenght / 2));
+                        return distance + circle;
                     }
+                    else if(topRight <= input && input < topLeft ){
+                        //Top side
+                        distance += Math.Abs(input - (topRight + sideLenght / 2));
+                        return distance + circle;
+                    }
+                    else if (topLeft <= input && input < botLeft){
+                        //Left side
+                        distance += Math.Abs(input - (topLeft + sideLenght / 2));
+                        return distance + circle;
+                    }
+                    else if(botLeft <= input && input <= finish){
+                        //Bot side
+                        distance += Math.Abs(input - (botLeft + sideLenght / 2));
+                        return distance + circle;
+                    }
+                
+
                 }
                 else
                 {
@@ -41,6 +66,21 @@ namespace _3
                     finish = finish + circleLength;
                 }
             }
+        }
+        static int second(int input)
+        {
+            var circle = new List<int>();
+            
+            //Init
+            int depth = 1;
+            int sideLength = 3;
+            circle.Add(1);
+
+            while (true)
+            {
+
+            }
+            return 0;
         }
     }
 }

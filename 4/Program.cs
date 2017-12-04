@@ -15,7 +15,6 @@ namespace _4
             var lines = File.ReadLines(path);
 
 
-            generateWords("abcd");
             //Console.WriteLine("First: " + first(lines));
             Console.WriteLine("Second: " + second(lines));
             Console.ReadKey();
@@ -77,24 +76,41 @@ namespace _4
             return score;
         }
 
+        //recursion
+        static List<string> getPerm(string word, int depth, int maxDepth)
+        {
+            List<string> perms = new List<string>();
+            perms.Add(word);
+            if (depth == maxDepth)
+            {
+                return perms;
+            }
+            for(int i = depth; i <= maxDepth; i++)
+            {
+                string swapped = SwapCharacters(word, depth, i);
+                perms.Add(swapped);
+                perms.AddRange(getPerm(swapped, depth + 1, maxDepth));
+            }
+            return perms;
+                
+        }
+
 
         static List<string> generateWords(string word)
         {
-            List<string> words = new List<string>();
-            HashSet<string> dup = new HashSet<string>();
-            for(int i = 0; i < word.Length; i++)
+            List<string> l = getPerm(word,0,word.Length-1);
+            List<string> n = new List<string>();
+            HashSet<string> dict = new HashSet<string>();
+
+            foreach(var w in l)
             {
-                for(int j = 0; j < word.Length; j++)
+                if (!dict.Contains(w))
                 {
-                    string anagram = SwapCharacters(word, i, j);
-                    if (!dup.Contains(anagram))
-                    {
-                        words.Add(SwapCharacters(word, i, j));
-                        dup.Add(anagram);
-                    }
+                    dict.Add(w);
+                    n.Add(w);
                 }
             }
-            return words;
+            return n;
         }
 
         static string SwapCharacters(string value, int position1, int position2)

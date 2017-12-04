@@ -14,9 +14,17 @@ namespace _4
             Console.WriteLine("Reading for file at: " + path);
             var lines = File.ReadLines(path);
 
-
-            //Console.WriteLine("First: " + first(lines));
+            DateTime dt = DateTime.Now;
+            Console.WriteLine("First: " + first(lines));
+            Console.WriteLine("Run time: " + (DateTime.Now - dt));
+            dt = DateTime.Now;
+            /*
             Console.WriteLine("Second: " + second(lines));
+            Console.WriteLine("Run time: " + (DateTime.Now - dt));
+            dt = DateTime.Now;*/
+            Console.WriteLine("SecondImproved: " + secondImproved(lines));
+            Console.WriteLine("Run time: " + (DateTime.Now - dt));
+            //dt = DateTime.Now;
             Console.ReadKey();
         }
         static int first(IEnumerable<string> lines)
@@ -75,6 +83,34 @@ namespace _4
             }
             return score;
         }
+
+        //
+        static int secondImproved(IEnumerable<string> lines)
+        {
+            int score = 0;
+            HashSet<string> wordSet;
+            foreach (string line in lines)
+            {
+                wordSet = new HashSet<string>();
+                string[] words = line.Split(' ');
+                for (int i = 0; i < words.Length; i++)
+                {
+                    string w = String.Concat(words[i].OrderBy(c => c));
+                    if (wordSet.Contains(w))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        wordSet.Add(w);
+                        if (i == words.Length - 1)
+                            score++;
+                    }
+                }
+            }
+            return score;
+        }
+    
 
         //recursion
         static List<string> getPerm(string word, int depth, int maxDepth)

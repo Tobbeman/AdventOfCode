@@ -32,6 +32,9 @@ namespace _6_Memory_Reallocation
             Console.WriteLine("First: " + first((int[])array.Clone()));
             Console.WriteLine("Run time: " + (DateTime.Now - dt));
             dt = DateTime.Now;
+            Console.WriteLine("Second: " + second((int[])array.Clone()));
+            Console.WriteLine("Run time: " + (DateTime.Now - dt));
+            dt = DateTime.Now;
 
 
 
@@ -58,7 +61,6 @@ namespace _6_Memory_Reallocation
                     }
                 }
 
-
                 if (orders.Contains(order))
                     break;
                 else
@@ -80,6 +82,54 @@ namespace _6_Memory_Reallocation
             }
 
             return cycles;
+        }
+        static int second(int[] banks)
+        {
+            int cycles = 0;
+            int blocks = 0;
+            int loopIndex = 0;
+            string order = "";
+            Dictionary<string, int> orders = new Dictionary<string, int>();
+            while (true)
+            {
+                order = "";
+                blocks = 0;
+                for (int i = 0; i < banks.Length; i++)
+                {
+                    order += banks[i].ToString();
+                    if (banks[i] > blocks)
+                    {
+                        blocks = banks[i];
+                        loopIndex = i;
+                    }
+                }
+
+                if (orders.ContainsKey(order))
+                    break;
+                else
+                    orders.Add(order, 0);
+
+                foreach (var s in orders.Keys)
+                {
+                    orders[s]++;
+                }
+
+                banks[loopIndex] = 0;
+                loopIndex++;
+                while (blocks > 0)
+                {
+                    if (loopIndex >= banks.Length)
+                    {
+                        loopIndex = 0;
+                    }
+                    banks[loopIndex]++;
+                    blocks--;
+                    loopIndex++;
+                }
+                cycles++;
+            }
+
+            return orders[order];
         }
     }
 }

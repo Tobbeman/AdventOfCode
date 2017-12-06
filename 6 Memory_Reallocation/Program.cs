@@ -109,10 +109,8 @@ namespace _6_Memory_Reallocation
                 else
                     orders.Add(order, 0);
 
-                foreach (var s in orders.Keys)
-                {
-                    orders[s]++;
-                }
+                foreach(string key in orders.Keys.ToList())
+                    orders[key]++;
 
                 banks[loopIndex] = 0;
                 loopIndex++;

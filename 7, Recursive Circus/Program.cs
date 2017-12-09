@@ -84,7 +84,8 @@ namespace _7__Recursive_Circus
         static int second(IEnumerable<string> lines)
         {
             Dictionary<string, disc> discMap = new Dictionary<string, disc>();
-            foreach(var line in lines)
+            List<string> linesWithChildren = new List<string>();
+            foreach (var line in lines)
             {
                 string[] segments = line.Split(' ');
                 disc d = new disc();
@@ -93,13 +94,17 @@ namespace _7__Recursive_Circus
                 d.weight = int.Parse(f);
                 d.totWeight = d.weight;
                 discMap.Add(d.name, d);
+
+                if(segments.Length >= 3)
+                {
+                    linesWithChildren.Add(line);
+                }
             }
 
-            foreach (var line in lines)
+            foreach (var line in linesWithChildren)
             {
                 string[] segments = line.Split(' ');
-                disc d = new disc();
-                d.name = segments[0];
+                disc d = discMap[segments[0]];
                 int layerWeight = 0;
                 for (int i = 3; i < segments.Length; i++)
                 {
@@ -111,15 +116,13 @@ namespace _7__Recursive_Circus
 
                     disc child = discMap[name];
 
-                    if (i == 2)
+                    if (i == 3)
                         layerWeight = child.totWeight;
 
                     if (child.totWeight != layerWeight)
                         return child.totWeight - layerWeight;
 
                     d.totWeight += child.weight;
-                    //Check if weight is total!
-                    d.children.Add(child);
                 }
                 discMap[d.name] = d;
             }

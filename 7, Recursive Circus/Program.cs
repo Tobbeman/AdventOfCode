@@ -85,6 +85,8 @@ namespace _7__Recursive_Circus
         {
             Dictionary<string, disc> discMap = new Dictionary<string, disc>();
             List<string> linesWithChildren = new List<string>();
+            
+            //Construct dict with all discs 
             foreach (var line in lines)
             {
                 string[] segments = line.Split(' ');
@@ -101,11 +103,11 @@ namespace _7__Recursive_Circus
                 }
             }
 
+            //Calc all weights for discs
             foreach (var line in linesWithChildren)
             {
                 string[] segments = line.Split(' ');
                 disc d = discMap[segments[0]];
-                int layerWeight = 0;
                 for (int i = 3; i < segments.Length; i++)
                 {
                     string name;
@@ -116,17 +118,50 @@ namespace _7__Recursive_Circus
 
                     disc child = discMap[name];
 
-                    if (i == 3)
-                        layerWeight = child.totWeight;
-
-                    if (child.totWeight != layerWeight)
-                        return child.totWeight - layerWeight;
-
                     d.totWeight += child.weight;
+                }
+                discMap[d.name] = d;
+            }
+
+            //find wrong weight
+            List<disc> layer = new List<disc>();
+            foreach (var line in linesWithChildren)
+            {
+                string[] segments = line.Split(' ');
+                disc d = discMap[segments[0]];
+                layer.Clear();
+                for (int i = 3; i < segments.Length; i++)
+                {
+                    string name;
+                    if (i == segments.Length - 1)
+                        name = segments[i];
+                    else
+                        name = segments[i].Substring(0, segments[i].Length - 1);
+
+                    disc child = discMap[name];
+                    
+                    layer.Add(child);
+                }
+                //get wrong weight
+                for (int i = 0; i < layer.Count; i++)
+                {
+                    int lower = i - 1;
+                    int higher = i + 1;
+                    if (lower < 0) lower = layer.Count() - 1;
+                    if (higher > layer.Count() - 1) higher = 0;
+                    if (layer[higher].totWeight != layer[i].totWeight && layer[lower].totWeight != layer[i].totWeight)
+                    {
+                        if(layer[higher].totWeight < layer[i].totWeight)
+                            return layer[i].weight - (layer[i].totWeight - layer[higher].totWeight);
+                        if (layer[higher].totWeight > layer[i].totWeight)
+                            return layer[i].weight + (layer[i].totWeight - layer[higher].totWeight);
+                    }
                 }
                 discMap[d.name] = d;
             }
             return 0;
         }
+
+
     }
 }

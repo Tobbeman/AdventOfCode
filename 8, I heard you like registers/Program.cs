@@ -13,6 +13,7 @@ namespace _8__I_heard_you_like_registers
         {
             public string register;
             public string change;
+            public int value;
             public string ifRegister;
             public string ifOperator;
             public int ifValue;
@@ -34,9 +35,10 @@ namespace _8__I_heard_you_like_registers
 
             l.register = segments[0];
             l.change = segments[1];
-            l.ifRegister = segments[2];
-            l.ifOperator = segments[3];
-            l.ifValue = int.Parse(segments[4]);
+            l.value = int.Parse(segments[2]);
+            l.ifRegister = segments[4];
+            l.ifOperator = segments[5];
+            l.ifValue = int.Parse(segments[6]);
 
             return l;
         
@@ -57,12 +59,12 @@ namespace _8__I_heard_you_like_registers
             Console.ReadKey();
         }
 
-        static int first(IEnumerable<string> lines)
+        static Dictionary<string,int> runCode(IEnumerable<string> lines)
         {
             Dictionary<string, int> registers = new Dictionary<string, int>();
             bool pass = false;
             int highest = 0;
-            foreach(var line in lines)
+            foreach (var line in lines)
             {
                 line l = parseLine(line);
                 if (!registers.ContainsKey(l.register))
@@ -82,11 +84,11 @@ namespace _8__I_heard_you_like_registers
                 {
                     if (registers[l.ifRegister] < l.ifValue) pass = true;
                 }
-                else if(l.ifOperator == ">=")
+                else if (l.ifOperator == ">=")
                 {
                     if (registers[l.ifRegister] >= l.ifValue) pass = true;
                 }
-                else if(l.ifOperator == "<=")
+                else if (l.ifOperator == "<=")
                 {
                     if (registers[l.ifRegister] <= l.ifValue) pass = true;
                 }
@@ -97,16 +99,27 @@ namespace _8__I_heard_you_like_registers
 
                 if (pass)
                 {
-                    if(l.change == "inc")
+                    if (l.change == "inc")
                     {
-                        registers[l.register]++;
-                        if (registers[l.register] > highest) highest = registers[l.register];
+                        registers[l.register] += l.value;
                     }
-                    else registers[l.register]--;
+                    else registers[l.register]-= l.value;
                 }
-                    
+
             }
-            return 0;
+            return registers;
+        }
+
+        static int first(IEnumerable<string> lines)
+        {
+            Dictionary<string, int> registers = runCode(lines);
+
+            int highest = 0;
+            foreach(var key in registers.Keys.ToArray())
+            {
+                if (registers[key] > highest) highest = registers[key];
+            }
+            return highest;
         }
         static int second(IEnumerable<string> lines)
         {

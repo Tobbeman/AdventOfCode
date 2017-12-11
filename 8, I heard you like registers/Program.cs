@@ -53,19 +53,16 @@ namespace _8__I_heard_you_like_registers
             DateTime dt = DateTime.Now;
             Console.WriteLine("First: " + first(lines));
             Console.WriteLine("Run time: " + (DateTime.Now - dt));
-            dt = DateTime.Now;
-            Console.WriteLine("Second: " + second(lines));
-            Console.WriteLine("Run time: " + (DateTime.Now - dt));
             Console.ReadKey();
         }
 
         static Dictionary<string,int> runCode(IEnumerable<string> lines)
         {
             Dictionary<string, int> registers = new Dictionary<string, int>();
-            bool pass = false;
-            int highest = 0;
+            int highest = 0; 
             foreach (var line in lines)
             {
+                bool pass = false;
                 line l = parseLine(line);
                 if (!registers.ContainsKey(l.register))
                 {
@@ -92,9 +89,13 @@ namespace _8__I_heard_you_like_registers
                 {
                     if (registers[l.ifRegister] <= l.ifValue) pass = true;
                 }
-                else // ==
+                else if(l.ifOperator == "==") 
                 {
                     if (registers[l.ifRegister] == l.ifValue) pass = true;
+                }
+                else // ==
+                {
+                    if (registers[l.ifRegister] != l.ifValue) pass = true;
                 }
 
                 if (pass)
@@ -103,10 +104,11 @@ namespace _8__I_heard_you_like_registers
                     {
                         registers[l.register] += l.value;
                     }
-                    else registers[l.register]-= l.value;
+                    else registers[l.register] -= l.value;
                 }
-
+                if (registers[l.register] > highest) highest = registers[l.register];
             }
+            Console.WriteLine("Highest: " + highest);
             return registers;
         }
 
